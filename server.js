@@ -5,6 +5,7 @@ const { setupMaster, setupWorker } = require("@socket.io/sticky");
 const { createAdapter, setupPrimary } = require("@socket.io/cluster-adapter");
 const express = require('express');
 const cors = require('cors');
+const Messaging = require('./controllers/messaging.controller');
 require('dotenv').config();
 
 const app = express();
@@ -28,6 +29,8 @@ if(cluster.isPrimary){
 
     httpServer.listen(process.env.PORT ?? 8080);
 
+    //server is ready to be scaled with real load balancer. 
+    //now will create just two servers to test.
     for(let i = 0; i<2; i++){
         cluster.fork();
     }
@@ -41,7 +44,7 @@ if(cluster.isPrimary){
 
     const httpServer = createServer(app);
     const io = new Server(httpServer, {
-        cors: {origin: "*"}
+        cors: {origin: "*",methods: ['GET','POST']}
     });
   
     io.adapter(createAdapter());
@@ -51,7 +54,30 @@ if(cluster.isPrimary){
     io.on("connection", (socket) => {
         console.log(`socket ${socket.id} is connected to proccess ${process.pid}`);
 
-        console.log(Object.keys(Object.keys(io.engine.clients)));
-    });
+        socket.on('spin',async(message)=> {
+            let sockets = (await io.fetchSockets()).map(socket => socket.id);
+            sockets = sockets.filter(curr => curr.id !== socket.id);
+            Messaging.spin(
+                socket,
+                message, 
+                sockets
+            )
+        });
+
+        socket.on('wild', async(data)=>{
+            let sockets = (await io.fetchSockets()).map(socket => socket.id);
+            sockets = sockets.filter(curr => curr.id !== socket.id);
+            Messaging.wild(
+                socket,
+                data.message,
+                data.iterationRequested,
+                sockets
+            );
+        })
+
+        socket.on('disconnect', (reason)=>{
+            console.log(reason);
+        })
+})
 }
 
