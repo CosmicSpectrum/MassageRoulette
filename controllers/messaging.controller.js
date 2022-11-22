@@ -55,7 +55,20 @@ module.exports = class Messaging{
                 alreadySent.push(sockets[currIndex]);
             }
         }else{
-            throw consts.errorMessages.BADINPUT;
+            throw new Error(consts.errorMessages.BADINPUT);
+        }
+    }
+
+    /**
+     * The blast function will send a message to all connected clients.
+     * @param {SocketIo} socket The socket emmited the  
+     * @param {String} message The message to be sent 
+     */
+    static blast(socket,message){
+        if(InputsValidations.messageValidator(message)){
+            socket.broadcast.emit('new_msg', message);
+        }else{
+            throw new Error(consts.errorMessages.BADINPUT)
         }
     }
 }

@@ -54,12 +54,12 @@ if(cluster.isPrimary){
     io.on("connection", (socket) => {
         console.log(`socket ${socket.id} is connected to proccess ${process.pid}`);
 
-        socket.on('spin',async(message)=> {
+        socket.on('spin',async(data)=> {
             let sockets = (await io.fetchSockets()).map(socket => socket.id);
             sockets = sockets.filter(curr => curr.id !== socket.id);
             Messaging.spin(
                 socket,
-                message, 
+                data.message, 
                 sockets
             )
         });
@@ -74,6 +74,8 @@ if(cluster.isPrimary){
                 sockets
             );
         })
+
+        socket.on('blast', (data)=>Messaging.blast(socket, data.message))
 
         socket.on('disconnect', (reason)=>{
             console.log(reason);
