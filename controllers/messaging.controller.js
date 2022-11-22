@@ -43,7 +43,8 @@ module.exports = class Messaging{
      * @param {Array} sockets Array of ids of the connected sockets 
      */
     static wild(socket,message,iterationRequested, sockets){
-        if(InputsValidations.wildValidator(iterationRequested)){
+        if(InputsValidations.wildValidator(iterationRequested)
+             && InputsValidations.messageValidator(message)){
             const alreadySent =[];
             iterationRequested = this.#getIterationsAmount(sockets.length, iterationRequested);
             for(let i = 0; i<Number(iterationRequested); i++){
