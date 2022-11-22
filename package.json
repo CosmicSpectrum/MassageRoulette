@@ -1,0 +1,22 @@
+{
+  "name": "massegeroulette",
+  "version": "1.0.0",
+  "description": "Assignment to backend position",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "Harel Dagan",
+  "license": "ISC",
+  "dependencies": {
+    "@socket.io/cluster-adapter": "^0.2.1",
+    "@socket.io/sticky": "^1.0.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "http": "^0.0.1-security",
+    "socket.io": "^4.5.3",
+    "socketio-jwt": "^4.6.2"
+  }
+}
