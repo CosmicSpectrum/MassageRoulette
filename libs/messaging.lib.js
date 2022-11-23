@@ -1,15 +1,34 @@
 const InputsValidations = require('../utils/inputValidations');
-const consts = require('../consts/consts');
+const consts = require('../consts');
 
 module.exports = class Messaging{
+
+    /**
+     * Private fucntion: will randomized a number in the range of the connected sockets array
+     * @param {Number} socketsLength The length of the connected socket array
+     * @returns A whole positive number.
+     */
     static #getRandomIndex(socketsLength){
         return Math.round(Math.random() * (socketsLength - 0) + 0);
     }
 
+    /**
+     * Private function: will make sure that the range requested is not longer then the available sockets array
+     * @param {Number} socketsLength The length of the socket array
+     * @param {Number} iterationsRequested The requested amount of users to send the message to
+     * @returns returns the maximum amount of relevat iterations possible.
+     */
     static #getIterationsAmount(socketsLength, iterationsRequested){
         return iterationsRequested > socketsLength ? socketsLength : iterationsRequested
     }
 
+    /**
+     * Private function: this will make sure that it wont send a message to the same user more then once.
+     * @param {*} alreadySent Array of the users that already got the message.
+     * @param {*} currIndex the current checked index
+     * @param {*} sockets the socket list
+     * @returns the current socket index to send the message to.
+     */
     static #checkIfAlreadySent(alreadySent, currIndex,sockets){
         while(alreadySent.includes(sockets[currIndex]) ||
         alreadySent.length === sockets.length){
@@ -47,7 +66,7 @@ module.exports = class Messaging{
              && InputsValidations.messageValidator(message)){
             const alreadySent =[];
             iterationRequested = this.#getIterationsAmount(sockets.length, iterationRequested);
-            for(let i = 0; i<Number(iterationRequested); i++){
+            for(let i = 0; i<iterationRequested; i++){
                 let currIndex = this.#getRandomIndex(sockets.length);
                 currIndex = this.#checkIfAlreadySent(alreadySent, currIndex,sockets)
                 socket

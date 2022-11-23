@@ -1,0 +1,15 @@
+//for spin route:
+
+{
+    "message": "string input"
+}
+
+//for wild route: 
+
+{
+    "message": "string input",
+    "requestedIterations": whole integer input
+}
+
+//for blast route:
+same json as spin.

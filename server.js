@@ -1,3 +1,4 @@
+require('dotenv').config();
 const {createServer} = require('http');
 const cluster = require('cluster');
 const { setupMaster } = require("@socket.io/sticky");
@@ -5,8 +6,7 @@ const { setupPrimary } = require("@socket.io/cluster-adapter");
 const express = require('express');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
-const consts = require('./consts/consts');
-require('dotenv').config();
+const consts = require('./consts');
 
 
 
@@ -57,6 +57,6 @@ if(cluster.isPrimary){
 }
 
 cluster.on("exit", (worker) => {
-    console.log('worker ' + worker.process.pid + ' disconnected');
+    console.log(`worker ${worker.process.pid} disconnected`);
     cluster.fork();       
 });

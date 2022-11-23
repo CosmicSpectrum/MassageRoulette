@@ -10,7 +10,8 @@ module.exports = {
     },
     errorMessages: {
         BADINPUT: "bad input",
-        NOTAUTHENTICATED: "not authenticated"
+        NOTAUTHENTICATED: "not authenticated",
+        EXPIEREDTOKEN: "token expiered, please create a new one to maintain access"
     },
     endpoints: {
         ALLOWED_CLIENT: 'https://amritb.github.io'
