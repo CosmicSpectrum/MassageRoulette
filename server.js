@@ -4,15 +4,22 @@ const { setupMaster } = require("@socket.io/sticky");
 const { setupPrimary } = require("@socket.io/cluster-adapter");
 const express = require('express');
 const cors = require('cors');
+const cookieParser = require('cookie-parser');
+const consts = require('./consts/consts');
 require('dotenv').config();
 
-const app = express();
 
-app.use(cors());
+
 
 if(cluster.isPrimary){
     console.log(`Primary cluster is running ${process.pid}`);
-
+    
+    const app = express();
+    app.use(cookieParser());
+    app.use(cors({
+        origin: consts.endpoints.ALLOWED_CLIENT,
+    }))
+    
     const httpServer = createServer(app);
 
     setupMaster(httpServer, {
@@ -29,19 +36,27 @@ if(cluster.isPrimary){
 
     //server is ready to be scaled with real load balancer. 
     //now will create just two servers to test.
-    for(let i = 0; i<2; i++){
+    for(let i = 0; i< 1; i++){
         cluster.fork();
     }
 
-    cluster.on("exit", (worker) => {
-        console.log(`Worker ${worker.process.pid} died`);
-        cluster.fork();
-    });
+
 }else{
     console.log(`Worker ${process.pid} started`);
-
+    
+    
+    const app = express();
+    app.use(cookieParser());
+    app.use(cors({
+        origin: consts.endpoints.ALLOWED_CLIENT,
+    }))
+    
     const httpServer = createServer(app);
 
-    require('./libs/ioLib')(httpServer)
+    require('./libs/io.lib')(httpServer)
 }
 
+cluster.on("exit", (worker) => {
+    console.log('worker ' + worker.process.pid + ' disconnected');
+    cluster.fork();       
+});

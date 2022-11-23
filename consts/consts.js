@@ -9,6 +9,10 @@ module.exports = {
         }
     },
     errorMessages: {
-        BADINPUT: "bad input"
+        BADINPUT: "bad input",
+        NOTAUTHENTICATED: "not authenticated"
+    },
+    endpoints: {
+        ALLOWED_CLIENT: 'https://amritb.github.io'
     }
 }
